@@ -11,6 +11,7 @@ class GPickr {
 
     _stops = [];
     _focusedStop = null;
+    _mode = 'linear';
 
     constructor({el}) {
         el = typeof el === 'string' ? document.querySelector(el) : el;
@@ -37,7 +38,17 @@ class GPickr {
             this._focusedStop.color = color.toRGBA().toString();
             this._render();
         }).on('init', () => {
-            on(dom.gradient.stops.preview, 'click', e => {
+            const {gradient} = dom;
+
+            // Switch gradient mode
+            on(gradient.controls.mode, 'click', e => {
+                e.target.innerText = this._mode;
+                this._mode = (this._mode === 'linear') ? 'radial' : 'linear';
+                this._render();
+            });
+
+            // Adding new stops
+            on(gradient.stops.preview, 'click', e => {
                 this._addStop(
                     this._pickr.getColor().toRGBA().toString(),
                     this._resolveColorStopPosition(e.pageX)
@@ -50,8 +61,8 @@ class GPickr {
     }
 
     _render() {
-        const {preview} = dom.gradient.stops;
-        const {_stops} = this;
+        const {stops: {preview}, result} = dom.gradient;
+        const {_stops, _mode} = this;
         _stops.sort((a, b) => a.loc - b.loc);
 
         for (const {color, el, loc} of _stops) {
@@ -62,8 +73,19 @@ class GPickr {
         }
 
         // Apply gradient
-        const linearStops = _stops.map(v => `${v.color} ${v.loc * 100}%`);
-        preview.style.background = `linear-gradient(to right, ${linearStops.join(',')})`;
+        const linearStops = _stops.map(v => `${v.color} ${v.loc * 100}%`).join(',');
+        preview.style.background = `linear-gradient(to right, ${linearStops})`;
+
+        // Update result
+        switch (_mode) {
+            case 'linear': {
+                result.style.background = `linear-gradient(to right, ${linearStops})`;
+                break;
+            }
+            case 'radial': {
+                result.style.background = `radial-gradient(circle at center, ${linearStops})`;
+            }
+        }
     }
 
     _addStop(color, loc = 0.5) {

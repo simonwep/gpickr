@@ -17,13 +17,33 @@
     overflow: hidden;
     padding: 0.5em;
     font-family: $font-family;
+    user-select: none;
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    button {
+        border: none;
+        outline: none;
+        background: initial;
+        cursor: pointer;
+    }
 
     .gpcr-interaction {
         @include flex(column);
+        margin-left: 0.5em;
+
+        .gpcr-result {
+            @include size(5.4em, 12.5em);
+            border-radius: 0.15em;
+            margin-bottom: 0.5em;
+            flex-grow: 1;
+        }
 
         .gpcr-stops {
-            margin-left: 0.5em;
-
             .gpcr-stop-preview {
                 @include size(2em, 12.5em);
                 @include transparency-background(8px);
@@ -52,6 +72,24 @@
                     &::before {
                         border-radius: 100%;
                     }
+                }
+            }
+        }
+
+        .gpcr-controls {
+            margin-top: 1.5em;
+
+            > button {
+                text-transform: capitalize;
+                background: $palette-cloud-blue;
+                color: white;
+                padding: 0.5em 0.75em;
+                border-radius: 0.15em;
+                transition: all 0.3s;
+                flex-grow: 1;
+
+                &:hover {
+                    filter: brightness(0.95);
                 }
             }
         }
