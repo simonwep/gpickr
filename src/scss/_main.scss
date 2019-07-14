@@ -41,6 +41,7 @@
                     box-shadow: 0 0.05em 0.2em rgba(black, 0.15);
                     cursor: grab;
                     cursor: webkit-grab;
+                    transition: opacity 0.15s;
                 }
             }
         }

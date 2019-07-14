@@ -74,28 +74,65 @@ class GPickr {
         const stop = {
             el,
             loc,
-            color
+            color,
+
+            listener: on(el, ['mousedown', 'touchstart'], () => {
+                const markersbcr = markers.getBoundingClientRect();
+                this._pickr.setColor(stop.color);
+                this._focusedStop = stop;
+                let hidden = false;
+
+                // Listen for mouse / touch movements
+                const m = on(window, ['mousemove', 'touchmove'], e => {
+                    const rootDistance = Math.abs(e.pageY - markersbcr.y);
+
+                    // Allow the user to remove the current stop with trying to drag the stop away
+                    hidden = rootDistance > 50;
+                    el.style.opacity = hidden ? '0' : '1';
+
+                    if (!hidden) {
+                        stop.loc = this._resolveColorStopPosition(e.pageX);
+                        this._render();
+                    }
+                });
+
+                // Clear up after interaction endet
+                const s = on(window, ['mouseup', 'touchend', 'touchcancel'], () => {
+                    off(...m);
+                    off(...s);
+
+                    // If hidden, which means the user wants to remove it, remove the current stop
+                    if (hidden) {
+                        this._removeStop(stop);
+                        this._render();
+                    }
+                });
+            })
         };
 
-        on(el, ['mousedown', 'touchstart'], () => {
-            this._pickr.setColor(stop.color);
-            this._focusedStop = stop;
-
-            const m = on(window, ['mousemove', 'touchmove'], e => {
-                stop.loc = this._resolveColorStopPosition(e.pageX);
-                this._render();
-            });
-
-            const s = on(window, ['mouseup', 'touchend', 'touchcancel'], () => {
-                off(...m);
-                off(...s);
-            });
-        });
 
         this._focusedStop = stop;
         this._pickr.setColor(stop.color);
         this._stops.push(stop);
         this._render();
+    }
+
+    _removeStop(stop) {
+        const {_stops} = this;
+
+        // Remove stop from list
+        _stops.splice(_stops.indexOf(stop), 1);
+
+        // Remove stop element
+        stop.el.remove();
+
+        // Unbind listener
+        off(...stop.listener);
+
+        // Focus another stop since the current one may gone
+        if (this._focusedStop === stop) {
+            this._focusedStop = _stops[0];
+        }
     }
 
     _resolveColorStopPosition(x) {
