@@ -1,0 +1,51 @@
+@import '~sassyfication';
+
+.pcr-app {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+
+    .pcr-palette {
+        border-radius: 0 !important;
+    }
+}
+
+.gpcr-app {
+    @include inline-flex(row);
+    box-shadow: 0 0.15em 0.5em rgba(black, 0.1);
+    border-radius: 0.15em;
+    overflow: hidden;
+    padding: 0.5em;
+
+    .gpcr-interaction {
+        @include flex(column);
+
+        .gpcr-stops {
+            margin-left: 0.5em;
+
+            .gpcr-stop-preview {
+                @include size(2em, 12.5em);
+                border-radius: 0.15em;
+            }
+
+            .gpcr-stop-marker {
+                position: relative;
+
+                .gpcr-marker {
+                    @include size(8px);
+                    position: absolute;
+                    background: currentColor;
+                    margin: 0.15em 0 0 -4px;
+                    border-radius: 100%;
+                    border: 2px solid white;
+                    box-shadow: 0 0.05em 0.2em rgba(black, 0.15);
+                    cursor: grab;
+                    cursor: webkit-grab;
+                }
+            }
+        }
+
+        .gpcr-result {
+            @include size(2em, 12.5em);
+        }
+    }
+}

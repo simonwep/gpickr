@@ -1,0 +1,3 @@
+new GPickr({
+    el: '.gpickr'
+});
