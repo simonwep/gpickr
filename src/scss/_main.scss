@@ -1,11 +1,12 @@
 @import '~sassyfication';
+@import 'lib/variables';
+@import 'lib/mixins';
 
 .pcr-app {
     box-shadow: none !important;
-    border-radius: 0 !important;
 
-    .pcr-palette {
-        border-radius: 0 !important;
+    .pcr-picker {
+        @include size(12px !important);
     }
 }
 
@@ -15,6 +16,7 @@
     border-radius: 0.15em;
     overflow: hidden;
     padding: 0.5em;
+    font-family: $font-family;
 
     .gpcr-interaction {
         @include flex(column);
@@ -24,7 +26,10 @@
 
             .gpcr-stop-preview {
                 @include size(2em, 12.5em);
+                @include transparency-background(8px);
+                position: relative;
                 border-radius: 0.15em;
+                overflow: hidden;
                 cursor: pointer;
             }
 
@@ -33,21 +38,22 @@
 
                 .gpcr-marker {
                     @include size(10px);
+                    @include transparency-background(4px);
                     position: absolute;
                     background: currentColor;
                     margin: 0.15em 0 0 -5px;
                     border-radius: 100%;
                     border: 2px solid white;
                     box-shadow: 0 0.05em 0.2em rgba(black, 0.15);
+                    transition: opacity 0.15s;
                     cursor: grab;
                     cursor: webkit-grab;
-                    transition: opacity 0.15s;
+
+                    &::before {
+                        border-radius: 100%;
+                    }
                 }
             }
-        }
-
-        .gpcr-result {
-            @include size(2em, 12.5em);
         }
     }
 }
