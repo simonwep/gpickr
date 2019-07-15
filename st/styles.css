@@ -32,7 +32,9 @@ body header h1 {
 }
 
 body header h3 {
-    font-weight: 400;
+    font-weight: 500;
+    font-size: 0.95em;
+    margin-top: 0.25em;
 }
 
 body header a {

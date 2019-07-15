@@ -67,4 +67,4 @@ typings/
 /.idea
 
 # My psd files
-/_psd
+.psd

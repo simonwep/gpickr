@@ -55,11 +55,22 @@ class GPickr {
         const {gradient} = this._root;
 
         // Switch gradient mode
-        on(gradient.controls.mode, 'click', e => {
-            e.target.innerText = this._mode;
+        on(gradient.mode, ['mousedown', 'touchstart'], e => {
+
+            // Update button mode
+            e.target.setAttribute('data-mode', this._mode);
+
+            // Set new mode
             this._mode = (this._mode === 'linear') ? 'radial' : 'linear';
+
+            // Show / hide angle control
             gradient.angle.style.opacity = (this._mode === 'linear') ? '1' : '0';
+
+            // Repaint
             this._render();
+
+            // Prevent some things
+            e.stopPropagation();
         });
 
         // Adding new stops
@@ -72,8 +83,12 @@ class GPickr {
 
         // Adjusting the angle
         on(gradient.result, ['mousedown', 'touchstart'], () => {
-            gradient.angle.classList.add(`gpcr-active`);
 
+            if (this._mode !== 'linear') {
+                return;
+            }
+
+            gradient.angle.classList.add(`gpcr-active`);
             const m = on(window, ['mousemove', 'touchmove'], e => {
                 const box = gradient.angle.getBoundingClientRect();
 
@@ -139,10 +154,19 @@ class GPickr {
         return loc;
     }
 
+    /**
+     * Adds a stop
+     * @param color Stop color
+     * @param loc Location between 0 and 1
+     * @returns {GPickr}
+     */
     addStop(color, loc = 0.5) {
         const {markers} = this._root.gradient.stops;
         const el = utils.createElementFromString('<div class="gpcr-marker"></div>');
         markers.appendChild(el);
+
+        this._pickr.setColor(color);
+        color = this._pickr.getColor().toRGBA().toString();
 
         const stop = {
             el, loc, color,
@@ -182,12 +206,15 @@ class GPickr {
         };
 
         this._focusedStop = stop;
-        this._pickr.setColor(stop.color);
         this._stops.push(stop);
         this._render();
         return this;
     }
 
+    /**
+     * Removes a stop.
+     * @param v Location, color or stop object
+     */
     removeStop(v) {
         const {_stops} = this;
 

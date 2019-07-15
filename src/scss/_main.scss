@@ -66,9 +66,46 @@
             &:hover .gpcr-angle {
                 opacity: 1;
             }
+
+            .gpcr-mode {
+                @include size(1.5em);
+                position: relative;
+                top: 0.15em;
+                left: 0.15em;
+                border: 2px solid white;
+                border-radius: 0.15em;
+                cursor: pointer;
+                opacity: 0.25;
+                transition: all 0.3s;
+
+                &::before {
+                    @include pseudo();
+                    @include position(0, 0, 0, 0);
+                    margin: auto;
+                    transition: all 0.3s;
+                }
+
+                &[data-mode=linear]::before {
+                    @include size(2px, 70%);
+                    background: white;
+                    transform: rotate(45deg);
+                    border-radius: 50em;
+                }
+
+                &[data-mode=radial]::before {
+                    @include size(50%);
+                    border-radius: 100%;
+                    border: 2px solid white;
+                }
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
         }
 
         .gpcr-stops {
+            margin-bottom: 0.75em;
 
             .gpcr-stop-preview {
                 @include size(2em, 12.5em);
@@ -99,25 +136,6 @@
                     &::before {
                         border-radius: 100%;
                     }
-                }
-            }
-        }
-
-        .gpcr-controls {
-            margin-top: 1em;
-
-            > button {
-                font-size: 0.75em;
-                text-transform: capitalize;
-                background: $palette-cloud-blue;
-                color: white;
-                padding: 0.45em 0.75em;
-                border-radius: 0.15em;
-                transition: all 0.3s;
-                flex-grow: 1;
-
-                &:hover {
-                    filter: brightness(0.95);
                 }
             }
         }
