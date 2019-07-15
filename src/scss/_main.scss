@@ -1,23 +1,11 @@
+@import '~@simonwep/pickr/src/scss/themes/nano';
+@import '~@simonwep/pickr/src/scss/lib/variables';
 @import '~sassyfication';
-@import 'lib/variables';
-@import 'lib/mixins';
+@import 'pickr';
 
-.pcr-app {
-    box-shadow: none !important;
-
-    .pcr-picker {
-        @include size(14px !important);
-    }
-
-    .pcr-interaction {
-        padding: 0 !important;
-        margin-bottom: 0 !important;
-    }
-}
-
-.gpcr-app {
+.gpickr {
     @include inline-flex(row);
-    box-shadow: 0 0.15em 0.5em rgba(black, 0.1);
+    box-shadow: $box-shadow-app;
     border-radius: 0.15em;
     overflow: hidden;
     padding: 0.5em;
@@ -40,9 +28,11 @@
     .gpcr-interaction {
         @include flex(column);
         margin-left: 0.5em;
+        z-index: 1;
 
         .gpcr-result {
-            @include size(5.4em, 12.5em);
+            @include size(7.9em, 12.5em);
+            @include transparency-background(8px);
             position: relative;
             border-radius: 0.15em;
             margin-bottom: 0.5em;
@@ -55,7 +45,7 @@
                 background: white;
                 border-radius: 100%;
                 position: absolute;
-                opacity: 0.5;
+                opacity: 0.25;
                 transition: all 0.3s;
 
                 > div {
@@ -91,6 +81,7 @@
 
             .gpcr-stop-marker {
                 position: relative;
+                z-index: 1;
 
                 .gpcr-marker {
                     @include size(10px);
@@ -113,7 +104,7 @@
         }
 
         .gpcr-controls {
-            margin-top: 1.5em;
+            margin-top: 1em;
 
             > button {
                 font-size: 0.75em;

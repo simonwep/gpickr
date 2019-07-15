@@ -1,5 +1,4 @@
 import '../scss/_main.scss';
-import '@simonwep/pickr/src/scss/themes/nano.scss';
 
 import Pickr       from '@simonwep/pickr';
 import buildGPickr from './template';
@@ -13,21 +12,20 @@ class GPickr {
     _angle = 0;
     _focusedStop = null;
     _mode = 'linear';
-    _root = buildGPickr();
+    _root;
 
     constructor(opt) {
-        this.options = opt = Object.assign({
-            inline: false,
-            useAsButton: false
-        }, opt);
 
-        opt.el = typeof opt.el === 'string' ? document.querySelector(opt.el) : opt.el;
+        // Build dom
+        this._root = buildGPickr(opt);
+
+        opt.el = opt.el.split(/>>/g).reduce((pv, cv, ci, a) => {
+            pv = pv.querySelector(cv);
+            return ci < a.length - 1 ? pv.shadowRoot : pv;
+        }, document);
+
         opt.el.parentElement.replaceChild(this._root.root, opt.el);
 
-        this._launch();
-    }
-
-    _launch() {
         this._pickr = Pickr.create({
             el: this._root.pickr,
             theme: 'nano',
@@ -48,10 +46,12 @@ class GPickr {
         }).on('change', color => {
             this._focusedStop.color = color.toRGBA().toString();
             this._render();
-        }).on('init', () => this._init());
+        }).on('init', () => {
+            this._bindEvents();
+        });
     }
 
-    _init() {
+    _bindEvents() {
         const {gradient} = this._root;
 
         // Switch gradient mode
@@ -64,7 +64,7 @@ class GPickr {
 
         // Adding new stops
         on(gradient.stops.preview, 'click', e => {
-            this._addStop(
+            this.addStop(
                 this._pickr.getColor().toRGBA().toString(),
                 this._resolveColorStopPosition(e.pageX)
             );
@@ -95,9 +95,6 @@ class GPickr {
                 off(...s);
             });
         });
-
-        this._addStop('rgb(255,132,109)', 0);
-        this._addStop('rgb(255,136,230)', 1);
     }
 
     _render() {
@@ -120,18 +117,29 @@ class GPickr {
         arrow.style.transform = `rotate(${_angle - 90}deg)`;
 
         // Update result
-        switch (_mode) {
-            case 'linear': {
-                result.style.background = `linear-gradient(${_angle}deg, ${linearStops})`;
-                break;
+        result.style.background = (() => {
+            switch (_mode) {
+                case 'linear':
+                    return `linear-gradient(${_angle}deg, ${linearStops})`;
+                case 'radial':
+                    return `radial-gradient(circle at center, ${linearStops})`;
             }
-            case 'radial': {
-                result.style.background = `radial-gradient(circle at center, ${linearStops})`;
-            }
-        }
+        })();
     }
 
-    _addStop(color, loc = 0.5) {
+    _resolveColorStopPosition(x) {
+        const {markers} = this._root.gradient.stops;
+        const mbcr = markers.getBoundingClientRect();
+        const diff = x - mbcr.left;
+
+        let loc = diff / mbcr.width;
+        if (loc < 0) loc = 0;
+        if (loc > 1) loc = 1;
+
+        return loc;
+    }
+
+    addStop(color, loc = 0.5) {
         const {markers} = this._root.gradient.stops;
         const el = utils.createElementFromString('<div class="gpcr-marker"></div>');
         markers.appendChild(el);
@@ -166,22 +174,32 @@ class GPickr {
 
                     // If hidden, which means the user wants to remove it, remove the current stop
                     if (hidden) {
-                        this._removeStop(stop);
+                        this.removeStop(stop);
                         this._render();
                     }
                 });
             })
         };
 
-
         this._focusedStop = stop;
         this._pickr.setColor(stop.color);
         this._stops.push(stop);
         this._render();
+        return this;
     }
 
-    _removeStop(stop) {
+    removeStop(v) {
         const {_stops} = this;
+
+        const stop = (() => {
+            if (typeof v === 'number') {
+                return _stops.find(v => v.loc === v);
+            } else if (typeof v === 'string') {
+                return _stops.find(v => v.color === v);
+            } else if (typeof v === 'object') {
+                return v;
+            }
+        })();
 
         // Remove stop from list
         _stops.splice(_stops.indexOf(stop), 1);
@@ -196,17 +214,6 @@ class GPickr {
         if (this._focusedStop === stop) {
             this._focusedStop = _stops[0];
         }
-    }
-
-    _resolveColorStopPosition(x) {
-        const {markers} = this._root.gradient.stops;
-        const diff = x - markers.offsetLeft;
-
-        let loc = diff / markers.offsetWidth;
-        if (loc < 0) loc = 0;
-        if (loc > 1) loc = 1;
-
-        return loc;
     }
 }
 

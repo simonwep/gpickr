@@ -1,10 +1,10 @@
 import {utils} from '@simonwep/pickr';
 
 export default () => utils.createFromTemplate(`
-<div data-key="root" class="gpcr-app">
+<div data-key="root" class="gpickr">
 
     <div data-key="pickr"></div>
-
+        
     <div data-con="gradient" class="gpcr-interaction">
     
         <div data-key="result" class="gpcr-result">
