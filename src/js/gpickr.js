@@ -45,7 +45,7 @@ class GPickr {
             on(gradient.controls.mode, 'click', e => {
                 e.target.innerText = this._mode;
                 this._mode = (this._mode === 'linear') ? 'radial' : 'linear';
-                gradient.angle.style.opacity = this._mode === 'linear' ? '1' : '0';
+                gradient.angle.style.opacity = (this._mode === 'linear') ? '1' : '0';
                 this._render();
             });
 
@@ -63,10 +63,16 @@ class GPickr {
 
                 const m = on(window, ['mousemove', 'touchmove'], e => {
                     const box = gradient.angle.getBoundingClientRect();
+
+                    // Calculate angle relative to the center
                     const boxcx = box.left + box.width / 2;
                     const boxcy = box.top + box.height / 2;
                     const radians = Math.atan2(e.pageX - boxcx, (e.pageY - boxcy)) - Math.PI;
-                    this._angle = Math.abs(radians * 180 / Math.PI);
+                    const degrees = Math.abs(radians * 180 / Math.PI);
+
+                    // ctrl and shift can be used to divide / quarter the snapping points
+                    const div = [1, 2, 4][Number(e.shiftKey || e.ctrlKey * 2)];
+                    this._angle = degrees - (degrees % (45 / div));
                     this._render();
                 });
 
