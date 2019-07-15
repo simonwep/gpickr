@@ -6,7 +6,12 @@
     box-shadow: none !important;
 
     .pcr-picker {
-        @include size(12px !important);
+        @include size(14px !important);
+    }
+
+    .pcr-interaction {
+        padding: 0 !important;
+        margin-bottom: 0 !important;
     }
 }
 
@@ -80,10 +85,11 @@
             margin-top: 1.5em;
 
             > button {
+                font-size: 0.75em;
                 text-transform: capitalize;
                 background: $palette-cloud-blue;
                 color: white;
-                padding: 0.5em 0.75em;
+                padding: 0.45em 0.75em;
                 border-radius: 0.15em;
                 transition: all 0.3s;
                 flex-grow: 1;

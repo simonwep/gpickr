@@ -94,9 +94,7 @@ class GPickr {
         markers.appendChild(el);
 
         const stop = {
-            el,
-            loc,
-            color,
+            el, loc, color,
 
             listener: on(el, ['mousedown', 'touchstart'], () => {
                 const markersbcr = markers.getBoundingClientRect();
@@ -109,7 +107,7 @@ class GPickr {
                     const rootDistance = Math.abs(e.pageY - markersbcr.y);
 
                     // Allow the user to remove the current stop with trying to drag the stop away
-                    hidden = rootDistance > 50;
+                    hidden = rootDistance > 50 && this._stops.length > 2;
                     el.style.opacity = hidden ? '0' : '1';
 
                     if (!hidden) {
