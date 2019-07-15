@@ -7,7 +7,11 @@ export default utils.createFromTemplate(`
 
     <div data-con="gradient" class="gpcr-interaction">
     
-        <div data-key="result" class="gpcr-result"></div>
+        <div data-key="result" class="gpcr-result">
+            <div data-key="angle" class="gpcr-angle">
+                <div data-key="arrow"></div>
+            </div>
+        </div>
         
         <div data-con="stops" class="gpcr-stops">
             <div data-key="preview" class="gpcr-stop-preview"></div>

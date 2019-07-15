@@ -10,6 +10,7 @@ const {on, off} = utils;
 class GPickr {
 
     _stops = [];
+    _angle = 0;
     _focusedStop = null;
     _mode = 'linear';
 
@@ -44,6 +45,7 @@ class GPickr {
             on(gradient.controls.mode, 'click', e => {
                 e.target.innerText = this._mode;
                 this._mode = (this._mode === 'linear') ? 'radial' : 'linear';
+                gradient.angle.style.opacity = this._mode === 'linear' ? '1' : '0';
                 this._render();
             });
 
@@ -55,14 +57,34 @@ class GPickr {
                 );
             });
 
+            // Adjusting the angle
+            on(gradient.result, ['mousedown', 'touchstart'], () => {
+                gradient.angle.classList.add(`gpcr-active`);
+
+                const m = on(window, ['mousemove', 'touchmove'], e => {
+                    const box = gradient.angle.getBoundingClientRect();
+                    const boxcx = box.left + box.width / 2;
+                    const boxcy = box.top + box.height / 2;
+                    const radians = Math.atan2(e.pageX - boxcx, (e.pageY - boxcy)) - Math.PI;
+                    this._angle = Math.abs(radians * 180 / Math.PI);
+                    this._render();
+                });
+
+                const s = on(window, ['mouseup', 'touchend', 'touchcancel'], () => {
+                    gradient.angle.classList.remove(`gpcr-active`);
+                    off(...m);
+                    off(...s);
+                });
+            });
+
             this._addStop('rgb(255,132,109)', 0);
             this._addStop('rgb(255,136,230)', 1);
         });
     }
 
     _render() {
-        const {stops: {preview}, result} = dom.gradient;
-        const {_stops, _mode} = this;
+        const {stops: {preview}, result, arrow} = dom.gradient;
+        const {_stops, _mode, _angle} = this;
         _stops.sort((a, b) => a.loc - b.loc);
 
         for (const {color, el, loc} of _stops) {
@@ -76,10 +98,13 @@ class GPickr {
         const linearStops = _stops.map(v => `${v.color} ${v.loc * 100}%`).join(',');
         preview.style.background = `linear-gradient(to right, ${linearStops})`;
 
+        // Rotate arrow
+        arrow.style.transform = `rotate(${_angle - 90}deg)`;
+
         // Update result
         switch (_mode) {
             case 'linear': {
-                result.style.background = `linear-gradient(to right, ${linearStops})`;
+                result.style.background = `linear-gradient(${_angle}deg, ${linearStops})`;
                 break;
             }
             case 'radial': {

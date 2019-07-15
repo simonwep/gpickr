@@ -43,12 +43,43 @@
 
         .gpcr-result {
             @include size(5.4em, 12.5em);
+            position: relative;
             border-radius: 0.15em;
             margin-bottom: 0.5em;
             flex-grow: 1;
+
+            .gpcr-angle {
+                @include position(0, 0, 0, 0);
+                @include size(0.35em);
+                margin: auto;
+                background: white;
+                border-radius: 100%;
+                position: absolute;
+                opacity: 0.5;
+                transition: all 0.3s;
+
+                > div {
+                    @include size(2px, 2em);
+                    @include position(0, 0, 0, 50%);
+                    position: absolute;
+                    background: white;
+                    border-radius: 1em;
+                    margin: auto 0;
+                    transform-origin: left;
+                }
+
+                &.gpcr-active {
+                    opacity: 1;
+                }
+            }
+
+            &:hover .gpcr-angle {
+                opacity: 1;
+            }
         }
 
         .gpcr-stops {
+
             .gpcr-stop-preview {
                 @include size(2em, 12.5em);
                 @include transparency-background(8px);
