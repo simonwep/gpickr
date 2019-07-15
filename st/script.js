@@ -1,6 +1,8 @@
 const gpickr = new GPickr({
-    el: '.gpickr'
+    el: '.gpickr',
+    stops: [
+        ['rgb(255,132,109)', 0],
+        ['rgb(255,136,230)', 1]
+    ]
 });
 
-gpickr.addStop('rgb(255,132,109)', 0)
-    .addStop('rgb(255,136,230)', 1);

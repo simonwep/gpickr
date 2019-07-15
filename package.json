@@ -1,5 +1,6 @@
 {
     "name": "gpickr",
+    "private": true,
     "version": "0.0.0",
     "license": "MIT",
     "author": "Simon Reinisch <toports@gmx.de>",

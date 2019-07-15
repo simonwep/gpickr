@@ -15,6 +15,12 @@ class GPickr {
     _root;
 
     constructor(opt) {
+        opt = Object.assign({
+            stops: [
+                ['#42445a', 0],
+                ['#20b6dd', 1]
+            ]
+        }, opt);
 
         // Build dom
         this._root = buildGPickr(opt);
@@ -47,6 +53,12 @@ class GPickr {
             this._focusedStop.color = color.toRGBA().toString();
             this._render();
         }).on('init', () => {
+
+            // Add pre-defined swatches
+            for (const [color, loc] of opt.stops) {
+                this.addStop(color, loc);
+            }
+
             this._bindEvents();
         });
     }
@@ -243,5 +255,8 @@ class GPickr {
         }
     }
 }
+
+// Expose pickr
+GPickr.Pickr = Pickr;
 
 export default GPickr;
