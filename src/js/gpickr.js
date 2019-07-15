@@ -1,8 +1,8 @@
 import '../scss/_main.scss';
 import '@simonwep/pickr/src/scss/themes/nano.scss';
 
-import Pickr from '@simonwep/pickr';
-import dom   from './template';
+import Pickr       from '@simonwep/pickr';
+import buildGPickr from './template';
 
 const {utils} = Pickr;
 const {on, off} = utils;
@@ -13,13 +13,23 @@ class GPickr {
     _angle = 0;
     _focusedStop = null;
     _mode = 'linear';
+    _root = buildGPickr();
 
-    constructor({el}) {
-        el = typeof el === 'string' ? document.querySelector(el) : el;
-        el.parentElement.replaceChild(dom.root, el);
+    constructor(opt) {
+        this.options = opt = Object.assign({
+            inline: false,
+            useAsButton: false
+        }, opt);
 
+        opt.el = typeof opt.el === 'string' ? document.querySelector(opt.el) : opt.el;
+        opt.el.parentElement.replaceChild(this._root.root, opt.el);
+
+        this._launch();
+    }
+
+    _launch() {
         this._pickr = Pickr.create({
-            el: dom.pickr,
+            el: this._root.pickr,
             theme: 'nano',
             inline: true,
             useAsButton: true,
@@ -38,58 +48,60 @@ class GPickr {
         }).on('change', color => {
             this._focusedStop.color = color.toRGBA().toString();
             this._render();
-        }).on('init', () => {
-            const {gradient} = dom;
+        }).on('init', () => this._init());
+    }
 
-            // Switch gradient mode
-            on(gradient.controls.mode, 'click', e => {
-                e.target.innerText = this._mode;
-                this._mode = (this._mode === 'linear') ? 'radial' : 'linear';
-                gradient.angle.style.opacity = (this._mode === 'linear') ? '1' : '0';
+    _init() {
+        const {gradient} = this._root;
+
+        // Switch gradient mode
+        on(gradient.controls.mode, 'click', e => {
+            e.target.innerText = this._mode;
+            this._mode = (this._mode === 'linear') ? 'radial' : 'linear';
+            gradient.angle.style.opacity = (this._mode === 'linear') ? '1' : '0';
+            this._render();
+        });
+
+        // Adding new stops
+        on(gradient.stops.preview, 'click', e => {
+            this._addStop(
+                this._pickr.getColor().toRGBA().toString(),
+                this._resolveColorStopPosition(e.pageX)
+            );
+        });
+
+        // Adjusting the angle
+        on(gradient.result, ['mousedown', 'touchstart'], () => {
+            gradient.angle.classList.add(`gpcr-active`);
+
+            const m = on(window, ['mousemove', 'touchmove'], e => {
+                const box = gradient.angle.getBoundingClientRect();
+
+                // Calculate angle relative to the center
+                const boxcx = box.left + box.width / 2;
+                const boxcy = box.top + box.height / 2;
+                const radians = Math.atan2(e.pageX - boxcx, (e.pageY - boxcy)) - Math.PI;
+                const degrees = Math.abs(radians * 180 / Math.PI);
+
+                // ctrl and shift can be used to divide / quarter the snapping points
+                const div = [1, 2, 4][Number(e.shiftKey || e.ctrlKey * 2)];
+                this._angle = degrees - (degrees % (45 / div));
                 this._render();
             });
 
-            // Adding new stops
-            on(gradient.stops.preview, 'click', e => {
-                this._addStop(
-                    this._pickr.getColor().toRGBA().toString(),
-                    this._resolveColorStopPosition(e.pageX)
-                );
+            const s = on(window, ['mouseup', 'touchend', 'touchcancel'], () => {
+                gradient.angle.classList.remove(`gpcr-active`);
+                off(...m);
+                off(...s);
             });
-
-            // Adjusting the angle
-            on(gradient.result, ['mousedown', 'touchstart'], () => {
-                gradient.angle.classList.add(`gpcr-active`);
-
-                const m = on(window, ['mousemove', 'touchmove'], e => {
-                    const box = gradient.angle.getBoundingClientRect();
-
-                    // Calculate angle relative to the center
-                    const boxcx = box.left + box.width / 2;
-                    const boxcy = box.top + box.height / 2;
-                    const radians = Math.atan2(e.pageX - boxcx, (e.pageY - boxcy)) - Math.PI;
-                    const degrees = Math.abs(radians * 180 / Math.PI);
-
-                    // ctrl and shift can be used to divide / quarter the snapping points
-                    const div = [1, 2, 4][Number(e.shiftKey || e.ctrlKey * 2)];
-                    this._angle = degrees - (degrees % (45 / div));
-                    this._render();
-                });
-
-                const s = on(window, ['mouseup', 'touchend', 'touchcancel'], () => {
-                    gradient.angle.classList.remove(`gpcr-active`);
-                    off(...m);
-                    off(...s);
-                });
-            });
-
-            this._addStop('rgb(255,132,109)', 0);
-            this._addStop('rgb(255,136,230)', 1);
         });
+
+        this._addStop('rgb(255,132,109)', 0);
+        this._addStop('rgb(255,136,230)', 1);
     }
 
     _render() {
-        const {stops: {preview}, result, arrow} = dom.gradient;
+        const {stops: {preview}, result, arrow} = this._root.gradient;
         const {_stops, _mode, _angle} = this;
         _stops.sort((a, b) => a.loc - b.loc);
 
@@ -120,7 +132,7 @@ class GPickr {
     }
 
     _addStop(color, loc = 0.5) {
-        const {markers} = dom.gradient.stops;
+        const {markers} = this._root.gradient.stops;
         const el = utils.createElementFromString('<div class="gpcr-marker"></div>');
         markers.appendChild(el);
 
@@ -187,7 +199,7 @@ class GPickr {
     }
 
     _resolveColorStopPosition(x) {
-        const {markers} = dom.gradient.stops;
+        const {markers} = this._root.gradient.stops;
         const diff = x - markers.offsetLeft;
 
         let loc = diff / markers.offsetWidth;

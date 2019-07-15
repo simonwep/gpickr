@@ -1,6 +1,6 @@
 import {utils} from '@simonwep/pickr';
 
-export default utils.createFromTemplate(`
+export default () => utils.createFromTemplate(`
 <div data-key="root" class="gpcr-app">
 
     <div data-key="pickr"></div>
