@@ -50,7 +50,7 @@ class GPickr {
                 }
             }
         }).on('change', color => {
-            this._focusedStop.color = color.toRGBA().toString();
+            this._focusedStop.color = color.toRGBA().toString(0);
             this._render();
         }).on('init', () => {
 
@@ -137,7 +137,7 @@ class GPickr {
         }
 
         // Apply gradient
-        const linearStops = _stops.map(v => `${v.color} ${v.loc * 100}%`).join(',');
+        const linearStops = this.getStops().toString();
         preview.style.background = `linear-gradient(to right, ${linearStops})`;
 
         // Rotate arrow
@@ -178,7 +178,7 @@ class GPickr {
         markers.appendChild(el);
 
         this._pickr.setColor(color);
-        color = this._pickr.getColor().toRGBA().toString();
+        color = this._pickr.getColor().toRGBA().toString(0);
 
         const stop = {
             el, loc, color,
@@ -253,6 +253,48 @@ class GPickr {
         if (this._focusedStop === stop) {
             this._focusedStop = _stops[0];
         }
+    }
+
+    /**
+     * Returns the gradient as css background string
+     * @returns {string}
+     */
+    getGradient() {
+        const linearStops = this.getStops().toString();
+
+        switch (this._mode) {
+            case 'linear':
+                return `linear-gradient(${this._angle}deg, ${linearStops})`;
+            case 'radial':
+                return `radial-gradient(circle at center, ${linearStops})`;
+        }
+    }
+
+    /**
+     * Returns the current stops.
+     * To toString function is overridden and returns the comma-joined version which
+     * can be used to custimize the direction aka angle.
+     * @returns {{color: *, location: *}[]}
+     */
+    getStops() {
+        const stops = this._stops.map(v => ({
+            color: v.color,
+            location: v.loc
+        }));
+
+        stops.toString = function () {
+            return this.map(v => `${v.color} ${v.location * 100}%`).join(',');
+        };
+
+        return stops;
+    }
+
+    /**
+     * Returns the current angle.
+     * @returns {number}
+     */
+    getAngle() {
+        return this._mode === 'linear' ? this._angle : -1;
     }
 }
 

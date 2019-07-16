@@ -19,4 +19,7 @@ const gpickr = new GPickr({
 * gpickr.Pickr _- [Pickr](https://github.com/Simonwep/pickr)._
 * gpickr.addStop(color`:String`, loc`:Number`) _- Add a color-stop._
 * gpickr.removeStop(v`:String|Number|Stop`) _- Remove a color stop by color, location or stop-instance._
-
+* gpickr.getGradient() _- Returns the current gradient as css string._
+* gpickr.getStops() _- Array of stop objects with each a `location` between `0` and `1` as well as an `rgba` color value. The `toString` function is overridden and 
+returns the array ready-to-use as comma seperated list, useful if a custom direcation / angle want to be used._
+* gpickr.getAngle() _- Returns the current selected angle. `-1` if currently in radial-mode_
