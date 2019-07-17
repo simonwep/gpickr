@@ -3,6 +3,7 @@ import '../scss/_main.scss';
 import Pickr         from '@simonwep/pickr';
 import buildGPickr   from './template';
 import simplifyEvent from '../js/utils/simplifyEvent';
+import parseGradient from '../js/utils/parseGradient';
 
 const {utils} = Pickr;
 const {on, off} = utils;
@@ -70,14 +71,8 @@ class GPickr {
         // Switch gradient mode
         on(gradient.mode, ['mousedown', 'touchstart'], e => {
 
-            // Update button mode
-            e.target.setAttribute('data-mode', this._mode);
-
             // Set new mode
             this._mode = (this._mode === 'linear') ? 'radial' : 'linear';
-
-            // Show / hide angle control
-            gradient.angle.style.opacity = (this._mode === 'linear') ? '1' : '0';
 
             // Repaint
             this._render();
@@ -128,7 +123,7 @@ class GPickr {
     }
 
     _render() {
-        const {stops: {preview}, result, arrow} = this._root.gradient;
+        const {stops: {preview}, result, arrow, angle, mode} = this._root.gradient;
         const {_stops, _mode, _angle} = this;
         _stops.sort((a, b) => a.loc - b.loc);
 
@@ -155,6 +150,10 @@ class GPickr {
                     return `radial-gradient(circle at center, ${linearStops})`;
             }
         })();
+
+        // Show / hide angle control. Update switch button
+        angle.style.opacity = (this._mode === 'linear') ? '1' : '0';
+        mode.setAttribute('data-mode', (this._mode === 'linear') ? 'radial' : 'linear');
     }
 
     _resolveColorStopPosition(x) {
@@ -301,6 +300,28 @@ class GPickr {
      */
     getAngle() {
         return this._mode === 'linear' ? this._angle : -1;
+    }
+
+    /**
+     * Tries to parse a css (similar?) gradient string.
+     * @param gradient
+     * @returns {boolean}
+     */
+    setGradient(gradient) {
+        const parsed = parseGradient(gradient);
+
+        if (parsed) {
+            const {type, stops} = parsed;
+            this._mode = type;
+
+            for (const {color, loc} of stops) {
+                this.addStop(color, loc);
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
 

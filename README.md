@@ -23,3 +23,4 @@ const gpickr = new GPickr({
 * gpickr.getStops() _- Array of stop objects with each a `location` between `0` and `1` as well as an `rgba` color value. The `toString` function is overridden and 
 returns the array ready-to-use as comma seperated list, useful if a custom direcation / angle want to be used._
 * gpickr.getAngle() _- Returns the current selected angle. `-1` if currently in radial-mode_
+* gpickr.setGradient(gradient`:String`) _- Tries to parse a existing gradient string._
