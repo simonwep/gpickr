@@ -13,7 +13,7 @@
         "lint": "eslint ./src"
     },
     "dependencies": {
-        "@simonwep/pickr": "https://github.com/Simonwep/pickr"
+        "@simonwep/pickr": "^1.2.2"
     },
     "devDependencies": {
         "@babel/core": "^7.5.4",

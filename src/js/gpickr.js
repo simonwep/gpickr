@@ -1,7 +1,8 @@
 import '../scss/_main.scss';
 
-import Pickr       from '@simonwep/pickr';
-import buildGPickr from './template';
+import Pickr         from '@simonwep/pickr';
+import buildGPickr   from './template';
+import simplifyEvent from '../js/utils/simplifyEvent';
 
 const {utils} = Pickr;
 const {on, off} = utils;
@@ -94,7 +95,8 @@ class GPickr {
         });
 
         // Adjusting the angle
-        on(gradient.result, ['mousedown', 'touchstart'], () => {
+        on(gradient.result, ['mousedown', 'touchstart'], e => {
+            e.preventDefault();
 
             if (this._mode !== 'linear') {
                 return;
@@ -102,12 +104,13 @@ class GPickr {
 
             gradient.angle.classList.add(`gpcr-active`);
             const m = on(window, ['mousemove', 'touchmove'], e => {
+                const {x, y} = simplifyEvent(e);
                 const box = gradient.angle.getBoundingClientRect();
 
                 // Calculate angle relative to the center
                 const boxcx = box.left + box.width / 2;
                 const boxcy = box.top + box.height / 2;
-                const radians = Math.atan2(e.pageX - boxcx, (e.pageY - boxcy)) - Math.PI;
+                const radians = Math.atan2(x - boxcx, (y - boxcy)) - Math.PI;
                 const degrees = Math.abs(radians * 180 / Math.PI);
 
                 // ctrl and shift can be used to divide / quarter the snapping points
@@ -183,7 +186,8 @@ class GPickr {
         const stop = {
             el, loc, color,
 
-            listener: on(el, ['mousedown', 'touchstart'], () => {
+            listener: on(el, ['mousedown', 'touchstart'], e => {
+                e.preventDefault();
                 const markersbcr = markers.getBoundingClientRect();
                 this._pickr.setColor(stop.color);
                 this._focusedStop = stop;
@@ -191,16 +195,18 @@ class GPickr {
 
                 // Listen for mouse / touch movements
                 const m = on(window, ['mousemove', 'touchmove'], e => {
-                    const rootDistance = Math.abs(e.pageY - markersbcr.y);
+                    const {x, y} = simplifyEvent(e);
+                    const rootDistance = Math.abs(y - markersbcr.y);
 
                     // Allow the user to remove the current stop with trying to drag the stop away
                     hidden = rootDistance > 50 && this._stops.length > 2;
                     el.style.opacity = hidden ? '0' : '1';
 
                     if (!hidden) {
-                        stop.loc = this._resolveColorStopPosition(e.pageX);
+                        stop.loc = this._resolveColorStopPosition(x);
                         this._render();
                     }
+
                 });
 
                 // Clear up after interaction endet

@@ -62,7 +62,7 @@
     box-shadow: 0 0 0 1px #f1f3f4, 0 0 0 3px currentColor; }
 
 .pcr-app[data-theme='nano'] {
-  position: absolute;
+  position: fixed;
   display: flex;
   flex-direction: column;
   z-index: 10000;
@@ -74,10 +74,12 @@
   background: #fff;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s, visibility 0s 2s;
   left: 0;
   top: 0; }
   .pcr-app[data-theme='nano'].visible {
+    transition: opacity 0.3s;
+    position: absolute;
     visibility: visible;
     opacity: 1; }
   .pcr-app[data-theme='nano'] .pcr-swatches {
@@ -305,7 +307,8 @@
   overflow: hidden;
   padding: 0.5em;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
-  user-select: none; }
+  user-select: none;
+  max-width: 100vw; }
   .gpickr * {
     box-sizing: border-box;
     margin: 0;
@@ -319,10 +322,11 @@
     flex-direction: column;
     display: flex;
     margin-left: 0.5em;
+    width: 12.5em;
     z-index: 1; }
     .gpickr .gpcr-interaction .gpcr-result {
       height: 7.9em;
-      width: 12.5em;
+      width: 100%;
       position: relative;
       border-radius: 0.15em;
       margin-bottom: 0.5em;
@@ -404,7 +408,7 @@
       margin-bottom: 0.75em; }
       .gpickr .gpcr-interaction .gpcr-stops .gpcr-stop-preview {
         height: 2em;
-        width: 12.5em;
+        width: 100%;
         position: relative;
         border-radius: 0.15em;
         overflow: hidden;
