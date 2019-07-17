@@ -15,7 +15,7 @@ const gpickr = new GPickr({
 })
 ```
 
-#### GPickr Instance / static props
+### GPickr Instance / static props
 * gpickr.Pickr _- [Pickr](https://github.com/Simonwep/pickr)._
 * gpickr.addStop(color`:String`, loc`:Number`) _- Add a color-stop._
 * gpickr.removeStop(v`:String|Number|Stop`) _- Remove a color stop by color, location or stop-instance._
@@ -24,3 +24,21 @@ const gpickr = new GPickr({
 returns the array ready-to-use as comma seperated list, useful if a custom direcation / angle want to be used._
 * gpickr.getAngle() _- Returns the current selected angle. `-1` if currently in radial-mode_
 * gpickr.setGradient(gradient`:String`) _- Tries to parse a existing gradient string._
+* gpickr.on(event`:String`, cb`:Function`) _- Appends an event listener to the given corresponding event-name (see section Events), returns the gpickr instance so it can be chained._
+* gpickr.off(event`:String`, cb`:Function`) _- Removes an event listener from the given corresponding event-name (see section Events), returns the gpickr instance so it can be chained._
+
+### Events
+
+| Event          | Description |
+| -------------- | ----------- |
+| `init`         | Initialization done - gpickr can be used |
+| `change`       | User changed the gradient |
+
+> Example:
+```js
+gpickr.on('init', instance => {
+    console.log('init', instance);
+}).on('change', instance => {
+    console.log('change', instance.getGradient());
+});
+```

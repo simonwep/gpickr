@@ -14,7 +14,11 @@ class GPickr {
     _angle = 0;
     _focusedStop = null;
     _mode = 'linear';
-    _root;
+    _root = null;
+    _eventListener = {
+        init: [],
+        change: []
+    };
 
     constructor(opt) {
         opt = Object.assign({
@@ -58,10 +62,11 @@ class GPickr {
 
             // Add pre-defined swatches
             for (const [color, loc] of opt.stops) {
-                this.addStop(color, loc);
+                this.addStop(color, loc, true);
             }
 
             this._bindEvents();
+            this._emit('init', this);
         });
     }
 
@@ -75,7 +80,7 @@ class GPickr {
             this._mode = (this._mode === 'linear') ? 'radial' : 'linear';
 
             // Repaint
-            this._render();
+            this._render(true);
 
             // Prevent some things
             e.stopPropagation();
@@ -122,7 +127,7 @@ class GPickr {
         });
     }
 
-    _render() {
+    _render(silent = false) {
         const {stops: {preview}, result, arrow, angle, mode} = this._root.gradient;
         const {_stops, _mode, _angle} = this;
         _stops.sort((a, b) => a.loc - b.loc);
@@ -154,6 +159,9 @@ class GPickr {
         // Show / hide angle control. Update switch button
         angle.style.opacity = (this._mode === 'linear') ? '1' : '0';
         mode.setAttribute('data-mode', (this._mode === 'linear') ? 'radial' : 'linear');
+
+        // Fire event
+        !silent && this._emit('change', this);
     }
 
     _resolveColorStopPosition(x) {
@@ -172,9 +180,10 @@ class GPickr {
      * Adds a stop
      * @param color Stop color
      * @param loc Location between 0 and 1
+     * @param silent
      * @returns {GPickr}
      */
-    addStop(color, loc = 0.5) {
+    addStop(color, loc = 0.5, silent = false) {
         const {markers} = this._root.gradient.stops;
         const el = utils.createElementFromString('<div class="gpcr-marker"></div>');
         markers.appendChild(el);
@@ -205,7 +214,6 @@ class GPickr {
                         stop.loc = this._resolveColorStopPosition(x);
                         this._render();
                     }
-
                 });
 
                 // Clear up after interaction endet
@@ -216,7 +224,7 @@ class GPickr {
                     // If hidden, which means the user wants to remove it, remove the current stop
                     if (hidden) {
                         this.removeStop(stop);
-                        this._render();
+                        this._render(true);
                     }
                 });
             })
@@ -224,7 +232,7 @@ class GPickr {
 
         this._focusedStop = stop;
         this._stops.push(stop);
-        this._render();
+        this._render(silent);
         return this;
     }
 
@@ -322,6 +330,46 @@ class GPickr {
         }
 
         return false;
+    }
+
+    _emit(event, ...args) {
+        this._eventListener[event].forEach(cb => cb(...args, this));
+    }
+
+    /**
+     * Adds an eventlistener
+     * @param event
+     * @param cb
+     * @returns {GPickr}
+     */
+    on(event, cb) {
+
+        // Validate
+        if (typeof cb === 'function' && typeof event === 'string' && event in this._eventListener) {
+            this._eventListener[event].push(cb);
+        }
+
+        return this;
+    }
+
+    /**
+     * Removes an eventlistener
+     * @param event
+     * @param cb
+     * @returns {GPickr}
+     */
+    off(event, cb) {
+        const callBacks = this._eventListener[event];
+
+        if (callBacks) {
+            const index = callBacks.indexOf(cb);
+
+            if (~index) {
+                callBacks.splice(index, 1);
+            }
+        }
+
+        return this;
     }
 }
 

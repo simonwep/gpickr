@@ -6,3 +6,8 @@ const gpickr = new GPickr({
     ]
 });
 
+gpickr.on('init', instance => {
+    console.log('init', instance);
+}).on('change', instance => {
+    console.log('change', instance.getGradient());
+});
