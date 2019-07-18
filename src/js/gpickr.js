@@ -10,8 +10,11 @@ const {on, off} = utils;
 
 class GPickr {
 
+    // Gradient props
     _stops = [];
     _angle = 0;
+    _pos = 'circle at center';
+
     _focusedStop = null;
     _mode = 'linear';
     _root = null;
@@ -30,6 +33,7 @@ class GPickr {
 
         // Build dom
         this._root = buildGPickr(opt);
+        console.log(this._root);
 
         opt.el = opt.el.split(/>>/g).reduce((pv, cv, ci, a) => {
             pv = pv.querySelector(cv);
@@ -125,11 +129,41 @@ class GPickr {
                 off(...s);
             });
         });
+
+        // Adusting circle position
+        on(gradient.pos, ['mousedown', 'touchstart'], e => {
+            this._pos = (() => {
+                switch (e.target.getAttribute('data-pos')) {
+                    case 'tl':
+                        return 'circle at top left';
+                    case 'tm':
+                        return 'circle at top center';
+                    case 'tr':
+                        return 'circle at top right';
+                    case 'r':
+                        return 'circle at right';
+                    case 'm':
+                        return 'circle at center';
+                    case 'l':
+                        return 'circle at left';
+                    case 'br':
+                        return 'circle at bottom right';
+                    case 'bm':
+                        return 'circle at bottom center';
+                    case 'bl':
+                        return 'circle at bottom left';
+                    default:
+                        return this._pos;
+                }
+            })();
+
+            this._render();
+        });
     }
 
     _render(silent = false) {
-        const {stops: {preview}, result, arrow, angle, mode} = this._root.gradient;
-        const {_stops, _mode, _angle} = this;
+        const {stops: {preview}, result, arrow, angle, pos, mode} = this._root.gradient;
+        const {_stops, _mode, _angle, _pos} = this;
         _stops.sort((a, b) => a.loc - b.loc);
 
         for (const {color, el, loc} of _stops) {
@@ -152,12 +186,13 @@ class GPickr {
                 case 'linear':
                     return `linear-gradient(${_angle}deg, ${linearStops})`;
                 case 'radial':
-                    return `radial-gradient(circle at center, ${linearStops})`;
+                    return `radial-gradient(${_pos}, ${linearStops})`;
             }
         })();
 
         // Show / hide angle control. Update switch button
-        angle.style.opacity = (this._mode === 'linear') ? '1' : '0';
+        angle.style.opacity = (this._mode === 'linear') ? '' : '0';
+        pos.style.opacity = (this._mode === 'linear') ? '0' : '';
         mode.setAttribute('data-mode', (this._mode === 'linear') ? 'radial' : 'linear');
 
         // Fire event
@@ -279,7 +314,7 @@ class GPickr {
             case 'linear':
                 return `linear-gradient(${this._angle}deg, ${linearStops})`;
             case 'radial':
-                return `radial-gradient(circle at center, ${linearStops})`;
+                return `radial-gradient(${this._pos}, ${linearStops})`;
         }
     }
 

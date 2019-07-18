@@ -40,15 +40,19 @@
             margin-bottom: 0.5em;
             flex-grow: 1;
 
+            .gpcr-pos,
             .gpcr-angle {
                 @include position(0, 0, 0, 0);
-                @include size(0.35em);
+                transition: all 0.3s;
+                position: absolute;
                 margin: auto;
+                opacity: 0.25;
+            }
+
+            .gpcr-angle {
+                @include size(0.35em);
                 background: white;
                 border-radius: 100%;
-                position: absolute;
-                opacity: 0.25;
-                transition: all 0.3s;
 
                 > div {
                     @include size(2px, 2em);
@@ -65,79 +69,109 @@
                 }
             }
 
+            .gpcr-pos {
+                @include size(5em);
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-rows: 1fr 1fr 1fr;
+                opacity: 1;
+
+                > div {
+                    @include size(15px);
+                    position: relative;
+                    margin: auto;
+                    cursor: pointer;
+
+                    &::before {
+                        @include pseudo();
+                        @include position(0, 0, 0, 0);
+                        @include size(5px);
+                        border-radius: 100%;
+                        background: white;
+                        transition: all 0.3s;
+                        opacity: 0.25;
+                        margin: auto;
+                    }
+
+                    &:hover::before {
+                        opacity: 1;
+                    }
+                }
+            }
+
             &:hover .gpcr-angle {
                 opacity: 1;
             }
-
-            .gpcr-mode {
-                @include size(1.5em);
-                position: relative;
-                top: 0.15em;
-                left: 0.15em;
-                border: 2px solid white;
-                border-radius: 0.15em;
-                cursor: pointer;
-                opacity: 0.25;
-                transition: all 0.3s;
-
-                &::before {
-                    @include pseudo();
-                    @include position(0, 0, 0, 0);
-                    margin: auto;
-                    transition: all 0.3s;
-                }
-
-                &[data-mode=linear]::before {
-                    @include size(2px, 70%);
-                    background: white;
-                    transform: rotate(45deg);
-                    border-radius: 50em;
-                }
-
-                &[data-mode=radial]::before {
-                    @include size(50%);
-                    border-radius: 100%;
-                    border: 2px solid white;
-                }
-
-                &:hover {
-                    opacity: 1;
-                }
-            }
         }
 
-        .gpcr-stops {
-            margin-bottom: 0.75em;
+        .gpcr-mode {
+            @include size(1.5em);
+            position: relative;
+            top: 0.15em;
+            left: 0.15em;
+            border: 2px solid white;
+            border-radius: 0.15em;
+            cursor: pointer;
+            opacity: 0.25;
+            transition: all 0.3s;
 
-            .gpcr-stop-preview {
-                @include size(2em, 100%);
-                @include transparency-background(8px);
-                position: relative;
-                border-radius: 0.15em;
-                overflow: hidden;
-                cursor: pointer;
+            &::before {
+                @include pseudo();
+                @include position(0, 0, 0, 0);
+                margin: auto;
+                transition: all 0.3s;
             }
 
-            .gpcr-stop-marker {
-                position: relative;
-                z-index: 1;
+            &[data-mode=linear]::before {
+                @include size(2px, 70%);
+                background: white;
+                transform: rotate(45deg);
+                border-radius: 50em;
+            }
 
-                .gpcr-marker {
-                    @include size(10px);
-                    @include transparency-background(4px);
-                    position: absolute;
-                    background: currentColor;
-                    margin: 0.15em 0 0 -5px;
+            &[data-mode=radial]::before {
+                @include size(50%);
+                border-radius: 100%;
+                border: 2px solid white;
+            }
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+
+    .gpcr-stops {
+        margin-bottom: 0.75em;
+
+        .gpcr-stop-preview {
+            @include size(2em, 100%);
+            @include transparency-background(8px);
+            position: relative;
+            border-radius: 0.15em;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .gpcr-stop-marker {
+            position: relative;
+            z-index: 1;
+
+            .gpcr-marker {
+                @include size(10px);
+                @include transparency-background(4px);
+                position: absolute;
+                background: currentColor;
+                margin: 0.15em 0 0 -5px;
+                border-radius: 100%;
+                border: 2px solid white;
+                box-shadow: 0 0.05em 0.2em rgba(black, 0.15);
+                transition: opacity 0.15s;
+                cursor: grab;
+                cursor: webkit-grab;
+
+                &::before {
                     border-radius: 100%;
-                    border: 2px solid white;
-                    box-shadow: 0 0.05em 0.2em rgba(black, 0.15);
-                    transition: opacity 0.15s;
-                    cursor: grab;
-                    cursor: webkit-grab;
-
-                    &::before {
-                        border-radius: 100%;
-                    }
                 }
             }
         }
