@@ -191,9 +191,15 @@ class GPickr {
         })();
 
         // Show / hide angle control. Update switch button
-        angle.style.opacity = (this._mode === 'linear') ? '' : '0';
-        pos.style.opacity = (this._mode === 'linear') ? '0' : '';
-        mode.setAttribute('data-mode', (this._mode === 'linear') ? 'radial' : 'linear');
+        const linear = this._mode === 'linear';
+
+        pos.style.opacity = linear ? '0' : '';
+        pos.style.visibility = linear ? 'hidden' : '';
+
+        angle.style.opacity = linear ? '' : '0';
+        angle.style.visibility = linear ? '' : 'hidden';
+
+        mode.setAttribute('data-mode', linear ? 'radial' : 'linear');
 
         // Fire event
         !silent && this._emit('change', this);
