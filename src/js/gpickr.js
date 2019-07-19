@@ -13,7 +13,7 @@ class GPickr {
     // Gradient props
     _stops = [];
     _angle = 0;
-    _pos = 'circle at center';
+    _direction = 'circle at center';
 
     _focusedStop = null;
     _mode = 'linear';
@@ -132,7 +132,7 @@ class GPickr {
 
         // Adusting circle position
         on(gradient.pos, ['mousedown', 'touchstart'], e => {
-            this._pos = (() => {
+            this._direction = (() => {
                 switch (e.target.getAttribute('data-pos')) {
                     case 'tl':
                         return 'circle at top left';
@@ -153,7 +153,7 @@ class GPickr {
                     case 'bl':
                         return 'circle at bottom left';
                     default:
-                        return this._pos;
+                        return this._direction;
                 }
             })();
 
@@ -163,7 +163,7 @@ class GPickr {
 
     _render(silent = false) {
         const {stops: {preview}, result, arrow, angle, pos, mode} = this._root.gradient;
-        const {_stops, _mode, _angle, _pos} = this;
+        const {_stops, _mode, _angle, _direction} = this;
         _stops.sort((a, b) => a.loc - b.loc);
 
         for (const {color, el, loc} of _stops) {
@@ -186,7 +186,7 @@ class GPickr {
                 case 'linear':
                     return `linear-gradient(${_angle}deg, ${linearStops})`;
                 case 'radial':
-                    return `radial-gradient(${_pos}, ${linearStops})`;
+                    return `radial-gradient(${_direction}, ${linearStops})`;
             }
         })();
 
@@ -320,7 +320,7 @@ class GPickr {
             case 'linear':
                 return `linear-gradient(${this._angle}deg, ${linearStops})`;
             case 'radial':
-                return `radial-gradient(${this._pos}, ${linearStops})`;
+                return `radial-gradient(${this._direction}, ${linearStops})`;
         }
     }
 
@@ -347,8 +347,16 @@ class GPickr {
      * Returns the current angle.
      * @returns {number}
      */
-    getAngle() {
+    getLinearAngle() {
         return this._mode === 'linear' ? this._angle : -1;
+    }
+
+    /**
+     * Returns the current direction.
+     * @returns {*}
+     */
+    getRadialDirection() {
+        return this._mode === 'radial' ? this._direction : null;
     }
 
     /**
