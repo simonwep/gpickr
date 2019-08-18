@@ -17,7 +17,7 @@ class GPickr {
 
     _focusedStop = null;
     _mode = 'linear';
-    _modes = ['linear', 'radial', 'conic'];
+    _modes = ['linear', 'radial'];
     _root = null;
     _eventListener = {
         init: [],
@@ -34,6 +34,11 @@ class GPickr {
 
         // Build dom
         this._root = buildGPickr(opt);
+
+        // Check if conic-gradient is supported
+        if (CSS.supports('background-image', 'conic-gradient(#fff, #fff)')) {
+            this._modes.push('conic');
+        }
 
         opt.el = opt.el.split(/>>/g).reduce((pv, cv, ci, a) => {
             pv = pv.querySelector(cv);
