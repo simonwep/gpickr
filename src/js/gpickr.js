@@ -1,10 +1,9 @@
 import '../scss/_main.scss';
 
-import Pickr     from '@simonwep/pickr';
+import Pickr from '@simonwep/pickr';
 
 import buildGPickr   from './template';
 import simplifyEvent from '../js/utils/simplifyEvent';
-import parseGradient from '../js/utils/parseGradient';
 
 const {utils} = Pickr;
 const {on, off} = utils;
@@ -309,6 +308,8 @@ class GPickr {
         if (this._focusedStop === stop) {
             this._focusedStop = _stops[0];
         }
+
+        this._render();
     }
 
     /**
@@ -359,28 +360,6 @@ class GPickr {
      */
     getRadialDirection() {
         return this._mode === 'radial' ? this._direction : null;
-    }
-
-    /**
-     * Tries to parse a css (similar?) gradient string.
-     * @param gradient
-     * @returns {boolean}
-     */
-    setGradient(gradient) {
-        const parsed = parseGradient(gradient);
-
-        if (parsed) {
-            const {type, stops} = parsed;
-            this._mode = type;
-
-            for (const {color, loc} of stops) {
-                this.addStop(color, loc);
-            }
-
-            return true;
-        }
-
-        return false;
     }
 
     _emit(event, ...args) {
