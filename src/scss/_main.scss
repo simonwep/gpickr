@@ -3,7 +3,7 @@
 @import '~sassyfication';
 @import 'pickr';
 
-.gpcr-app {
+.gpickr {
     @include inline-flex(row);
     box-shadow: $box-shadow-app;
     border-radius: 0.15em;
@@ -133,6 +133,12 @@
                 @include size(50%);
                 border-radius: 100%;
                 border: 2px solid white;
+            }
+
+            &[data-mode=conic]::before {
+                @include size(0);
+                border: 5px solid transparent;
+                border-color: white white transparent transparent;
             }
 
             &:hover {

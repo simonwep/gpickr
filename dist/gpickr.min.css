@@ -298,7 +298,7 @@
     padding: 0;
     margin-bottom: 0; }
 
-.gpcr-app {
+.gpickr {
   flex-direction: row;
   display: inline-flex;
   box-shadow: 0 0.15em 1.5em 0 rgba(0, 0, 0, 0.1), 0 0 1em 0 rgba(0, 0, 0, 0.03);
@@ -308,29 +308,29 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
   user-select: none;
   max-width: 100vw; }
-  .gpcr-app * {
+  .gpickr * {
     box-sizing: border-box;
     margin: 0;
     padding: 0; }
-  .gpcr-app button {
+  .gpickr button {
     border: none;
     outline: none;
     background: initial;
     cursor: pointer; }
-  .gpcr-app .gpcr-interaction {
+  .gpickr .gpcr-interaction {
     flex-direction: column;
     display: flex;
     margin-left: 0.5em;
     width: 12.5em;
     z-index: 1; }
-    .gpcr-app .gpcr-interaction .gpcr-result {
+    .gpickr .gpcr-interaction .gpcr-result {
       height: 7.9em;
       width: 100%;
       position: relative;
       border-radius: 0.15em;
       margin-bottom: 0.5em;
       flex-grow: 1; }
-      .gpcr-app .gpcr-interaction .gpcr-result::before {
+      .gpickr .gpcr-interaction .gpcr-result::before {
         position: absolute;
         content: '';
         top: 0;
@@ -341,8 +341,8 @@
         background-size: 8px;
         border-radius: 0.15em;
         z-index: -1; }
-      .gpcr-app .gpcr-interaction .gpcr-result .gpcr-pos,
-      .gpcr-app .gpcr-interaction .gpcr-result .gpcr-angle {
+      .gpickr .gpcr-interaction .gpcr-result .gpcr-pos,
+      .gpickr .gpcr-interaction .gpcr-result .gpcr-angle {
         top: 0;
         right: 0;
         bottom: 0;
@@ -351,12 +351,12 @@
         position: absolute;
         margin: auto;
         opacity: 0.25; }
-      .gpcr-app .gpcr-interaction .gpcr-result .gpcr-angle {
+      .gpickr .gpcr-interaction .gpcr-result .gpcr-angle {
         height: 0.35em;
         width: 0.35em;
         background: white;
         border-radius: 100%; }
-        .gpcr-app .gpcr-interaction .gpcr-result .gpcr-angle > div {
+        .gpickr .gpcr-interaction .gpcr-result .gpcr-angle > div {
           height: 2px;
           width: 2em;
           top: 0;
@@ -368,22 +368,22 @@
           border-radius: 1em;
           margin: auto 0;
           transform-origin: left; }
-        .gpcr-app .gpcr-interaction .gpcr-result .gpcr-angle.gpcr-active {
+        .gpickr .gpcr-interaction .gpcr-result .gpcr-angle.gpcr-active {
           opacity: 1; }
-      .gpcr-app .gpcr-interaction .gpcr-result .gpcr-pos {
+      .gpickr .gpcr-interaction .gpcr-result .gpcr-pos {
         height: 5em;
         width: 5em;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
         grid-template-rows: 1fr 1fr 1fr;
         opacity: 1; }
-        .gpcr-app .gpcr-interaction .gpcr-result .gpcr-pos > div {
+        .gpickr .gpcr-interaction .gpcr-result .gpcr-pos > div {
           height: 15px;
           width: 15px;
           position: relative;
           margin: auto;
           cursor: pointer; }
-          .gpcr-app .gpcr-interaction .gpcr-result .gpcr-pos > div::before {
+          .gpickr .gpcr-interaction .gpcr-result .gpcr-pos > div::before {
             position: absolute;
             content: "";
             top: 0;
@@ -397,11 +397,11 @@
             transition: all 0.3s;
             opacity: 0.25;
             margin: auto; }
-          .gpcr-app .gpcr-interaction .gpcr-result .gpcr-pos > div:hover::before {
+          .gpickr .gpcr-interaction .gpcr-result .gpcr-pos > div:hover::before {
             opacity: 1; }
-      .gpcr-app .gpcr-interaction .gpcr-result:hover .gpcr-angle {
+      .gpickr .gpcr-interaction .gpcr-result:hover .gpcr-angle {
         opacity: 1; }
-    .gpcr-app .gpcr-interaction .gpcr-mode {
+    .gpickr .gpcr-interaction .gpcr-mode {
       height: 1.5em;
       width: 1.5em;
       position: relative;
@@ -412,7 +412,7 @@
       cursor: pointer;
       opacity: 0.25;
       transition: all 0.3s; }
-      .gpcr-app .gpcr-interaction .gpcr-mode::before {
+      .gpickr .gpcr-interaction .gpcr-mode::before {
         position: absolute;
         content: "";
         top: 0;
@@ -421,29 +421,34 @@
         left: 0;
         margin: auto;
         transition: all 0.3s; }
-      .gpcr-app .gpcr-interaction .gpcr-mode[data-mode=linear]::before {
+      .gpickr .gpcr-interaction .gpcr-mode[data-mode=linear]::before {
         height: 2px;
         width: 70%;
         background: white;
         transform: rotate(45deg);
         border-radius: 50em; }
-      .gpcr-app .gpcr-interaction .gpcr-mode[data-mode=radial]::before {
+      .gpickr .gpcr-interaction .gpcr-mode[data-mode=radial]::before {
         height: 50%;
         width: 50%;
         border-radius: 100%;
         border: 2px solid white; }
-      .gpcr-app .gpcr-interaction .gpcr-mode:hover {
+      .gpickr .gpcr-interaction .gpcr-mode[data-mode=conic]::before {
+        height: 0;
+        width: 0;
+        border: 5px solid transparent;
+        border-color: white white transparent transparent; }
+      .gpickr .gpcr-interaction .gpcr-mode:hover {
         opacity: 1; }
-  .gpcr-app .gpcr-stops {
+  .gpickr .gpcr-stops {
     margin-bottom: 0.75em; }
-    .gpcr-app .gpcr-stops .gpcr-stop-preview {
+    .gpickr .gpcr-stops .gpcr-stop-preview {
       height: 2em;
       width: 100%;
       position: relative;
       border-radius: 0.15em;
       overflow: hidden;
       cursor: pointer; }
-      .gpcr-app .gpcr-stops .gpcr-stop-preview::before {
+      .gpickr .gpcr-stops .gpcr-stop-preview::before {
         position: absolute;
         content: '';
         top: 0;
@@ -454,10 +459,10 @@
         background-size: 8px;
         border-radius: 0.15em;
         z-index: -1; }
-    .gpcr-app .gpcr-stops .gpcr-stop-marker {
+    .gpickr .gpcr-stops .gpcr-stop-marker {
       position: relative;
       z-index: 1; }
-      .gpcr-app .gpcr-stops .gpcr-stop-marker .gpcr-marker {
+      .gpickr .gpcr-stops .gpcr-stop-marker .gpcr-marker {
         height: 10px;
         width: 10px;
         position: absolute;
@@ -469,7 +474,7 @@
         transition: opacity 0.15s;
         cursor: grab;
         cursor: webkit-grab; }
-        .gpcr-app .gpcr-stops .gpcr-stop-marker .gpcr-marker::before {
+        .gpickr .gpcr-stops .gpcr-stop-marker .gpcr-marker::before {
           position: absolute;
           content: '';
           top: 0;
@@ -480,6 +485,6 @@
           background-size: 4px;
           border-radius: 0.15em;
           z-index: -1; }
-        .gpcr-app .gpcr-stops .gpcr-stop-marker .gpcr-marker::before {
+        .gpickr .gpcr-stops .gpcr-stop-marker .gpcr-marker::before {
           border-radius: 100%; }
 

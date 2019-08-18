@@ -17,6 +17,7 @@ class GPickr {
 
     _focusedStop = null;
     _mode = 'linear';
+    _modes = ['linear', 'radial', 'conic'];
     _root = null;
     _eventListener = {
         init: [],
@@ -80,9 +81,8 @@ class GPickr {
 
         // Switch gradient mode
         on(gradient.mode, ['mousedown', 'touchstart'], e => {
-
-            // Set new mode
-            this._mode = (this._mode === 'linear') ? 'radial' : 'linear';
+            const nextIndex = this._modes.indexOf(this._mode) + 1;
+            this._mode = this._modes[nextIndex === this._modes.length ? 0 : nextIndex];
 
             // Repaint
             this._render(true);
@@ -164,7 +164,7 @@ class GPickr {
 
     _render(silent = false) {
         const {stops: {preview}, result, arrow, angle, pos, mode} = this._root.gradient;
-        const {_stops, _mode, _angle, _direction} = this;
+        const {_stops, _mode, _angle} = this;
         _stops.sort((a, b) => a.loc - b.loc);
 
         for (const {color, el, loc} of _stops) {
@@ -174,33 +174,20 @@ class GPickr {
             });
         }
 
-        // Apply gradient
-        const linearStops = this.getStops().toString();
-        preview.style.background = `linear-gradient(to right, ${linearStops})`;
-
         // Rotate arrow
         arrow.style.transform = `rotate(${_angle - 90}deg)`;
 
-        // Update result
-        result.style.background = (() => {
-            switch (_mode) {
-                case 'linear':
-                    return `linear-gradient(${_angle}deg, ${linearStops})`;
-                case 'radial':
-                    return `radial-gradient(${_direction}, ${linearStops})`;
-            }
-        })();
+        // Apply gradient and update result
+        preview.style.background = `linear-gradient(to right, ${this.getStops().toString('linear')})`;
+        result.style.background = this.getGradient().toString();
 
         // Show / hide angle control. Update switch button
-        const linear = this._mode === 'linear';
+        pos.style.opacity = _mode === 'radial' ? '' : '0';
+        pos.style.visibility = _mode === 'radial' ? '' : 'hidden';
+        angle.style.opacity = _mode === 'linear' ? '' : '0';
+        angle.style.visibility = _mode === 'linear' ? '' : 'hidden';
 
-        pos.style.opacity = linear ? '0' : '';
-        pos.style.visibility = linear ? 'hidden' : '';
-
-        angle.style.opacity = linear ? '' : '0';
-        angle.style.visibility = linear ? '' : 'hidden';
-
-        mode.setAttribute('data-mode', linear ? 'radial' : 'linear');
+        mode.setAttribute('data-mode', _mode);
 
         // Fire event
         !silent && this._emit('change', this);
@@ -316,14 +303,16 @@ class GPickr {
      * Returns the gradient as css background string
      * @returns {string}
      */
-    getGradient() {
-        const linearStops = this.getStops().toString();
+    getGradient(mode = this._mode) {
+        const linearStops = this.getStops().toString(mode);
 
-        switch (this._mode) {
+        switch (mode) {
             case 'linear':
                 return `linear-gradient(${this._angle}deg, ${linearStops})`;
             case 'radial':
                 return `radial-gradient(${this._direction}, ${linearStops})`;
+            case 'conic':
+                return `conic-gradient(${linearStops})`;
         }
     }
 
@@ -339,8 +328,15 @@ class GPickr {
             location: v.loc
         }));
 
-        stops.toString = function () {
-            return this.map(v => `${v.color} ${v.location * 100}%`).join(',');
+        const mode = this._mode;
+        stops.toString = function (type = mode) {
+            switch (type) {
+                case 'linear':
+                case 'radial':
+                    return this.map(v => `${v.color} ${v.location * 100}%`).join(',');
+                case 'conic':
+                    return this.map(v => `${v.color} ${v.location * 360}deg`).join(',');
+            }
         };
 
         return stops;
