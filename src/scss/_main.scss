@@ -164,7 +164,7 @@
             z-index: 1;
 
             .gpcr-marker {
-                @include size(10px);
+                @include size(12px);
                 @include transparency-background(4px);
                 position: absolute;
                 background: currentColor;
