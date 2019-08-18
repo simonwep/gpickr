@@ -1,6 +1,7 @@
 import '../scss/_main.scss';
 
-import Pickr         from '@simonwep/pickr';
+import Pickr     from '@simonwep/pickr';
+
 import buildGPickr   from './template';
 import simplifyEvent from '../js/utils/simplifyEvent';
 import parseGradient from '../js/utils/parseGradient';
@@ -33,7 +34,6 @@ class GPickr {
 
         // Build dom
         this._root = buildGPickr(opt);
-        console.log(this._root);
 
         opt.el = opt.el.split(/>>/g).reduce((pv, cv, ci, a) => {
             pv = pv.querySelector(cv);
@@ -60,8 +60,10 @@ class GPickr {
                 }
             }
         }).on('change', color => {
-            this._focusedStop.color = color.toRGBA().toString(0);
-            this._render();
+            if (this._focusedStop) {
+                this._focusedStop.color = color.toRGBA().toString(0);
+                this._render();
+            }
         }).on('init', () => {
 
             // Add pre-defined swatches

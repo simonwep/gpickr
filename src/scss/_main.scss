@@ -3,7 +3,7 @@
 @import '~sassyfication';
 @import 'pickr';
 
-.gpickr {
+.gpcr-app {
     @include inline-flex(row);
     box-shadow: $box-shadow-app;
     border-radius: 0.15em;
