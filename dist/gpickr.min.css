@@ -284,8 +284,8 @@
 .pcr-app.pcr-app {
   box-shadow: none; }
   .pcr-app.pcr-app .pcr-selection .pcr-picker {
-    height: 14px;
-    width: 14px; }
+    height: 18px;
+    width: 18px; }
   .pcr-app.pcr-app .pcr-selection .pcr-color-preview {
     margin-left: 0; }
     .pcr-app.pcr-app .pcr-selection .pcr-color-preview .pcr-current-color {
@@ -463,8 +463,8 @@
       position: relative;
       z-index: 1; }
       .gpickr .gpcr-stops .gpcr-stop-marker .gpcr-marker {
-        height: 10px;
-        width: 10px;
+        height: 12px;
+        width: 12px;
         position: absolute;
         background: currentColor;
         margin: 0.15em 0 0 -5px;

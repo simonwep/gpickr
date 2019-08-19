@@ -3,7 +3,8 @@ import '../scss/_main.scss';
 import Pickr from '@simonwep/pickr';
 
 import buildGPickr   from './template';
-import simplifyEvent from '../js/utils/simplifyEvent';
+import simplifyEvent from './utils/simplifyEvent';
+import parseGradient from './utils/parseGradient';
 
 const {utils} = Pickr;
 const {on, off} = utils;
@@ -302,6 +303,38 @@ class GPickr {
         }
 
         this._render();
+    }
+
+    /**
+     * Tries to parse a existing gradient string.
+     * @param str gradient string
+     */
+    setGradient(str) {
+        const parsed = parseGradient(str);
+
+        if (!parsed || parsed.stops.length < 2) {
+            return false;
+        }
+
+        const {type, stops} = parsed;
+        const oldStops = [...this._stops];
+        if (this._modes.includes(type)) {
+            this._mode = type;
+
+            for (const stop of stops) {
+                this.addStop(stop.color, stop.loc / 100);
+            }
+
+            for (const stop of oldStops) {
+                this.removeStop(stop);
+            }
+
+            // TODO: Parse modifier?!
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
