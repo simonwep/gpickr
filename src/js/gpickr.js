@@ -142,8 +142,7 @@ class GPickr {
 
                 // ctrl and shift can be used to divide / quarter the snapping points
                 const div = [1, 2, 4][Number(e.shiftKey || e.ctrlKey * 2)];
-                this._angle = degrees - (degrees % (45 / div));
-                this._render();
+                this.setLinearAngle(degrees - (degrees % (45 / div)));
             });
 
             const s = on(window, ['mouseup', 'touchend', 'touchcancel'], () => {
@@ -157,8 +156,7 @@ class GPickr {
         on(gradient.pos, ['mousedown', 'touchstart'], e => {
             const pos = e.target.getAttribute('data-pos');
             const pair = this._directions.find(v => v.pos === pos);
-            this._direction = (pair && pair.css) || this._direction;
-            this._render();
+            this.setRadialPosition((pair && pair.css) || this._direction);
         });
     }
 
@@ -323,7 +321,6 @@ class GPickr {
                 this.removeStop(stop);
             }
 
-            console.log(modifier);
             if (modifier) {
                 if (type === 'linear') {
                     this.setLinearAngle(modifier);
@@ -417,6 +414,12 @@ class GPickr {
         }
 
         this._direction = pair.css;
+
+        // Apply class
+        for (const child of Array.from(this._root.gradient.pos.children)) {
+            child.classList[child.getAttribute('data-pos') === pair.pos ? 'add' : 'remove']('gpcr-active');
+        }
+
         this._render();
         return true;
     }

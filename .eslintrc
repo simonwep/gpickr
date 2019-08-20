@@ -1,17 +1,18 @@
 {
     "parser": "babel-eslint",
-    "extends": [
-        "eslint:recommended"
-    ],
     "env": {
         "browser": true
     },
+    "extends": [
+        "eslint:recommended"
+    ],
     "parserOptions": {
         "ecmaVersion": 2018,
         "sourceType": "module"
     },
     "rules": {
         "no-cond-assign": "off",
-        "eqeqeq": "error"
+        "eqeqeq": "error",
+        "no-console": "error"
     }
 }

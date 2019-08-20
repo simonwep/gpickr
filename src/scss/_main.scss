@@ -78,9 +78,14 @@
 
                 > div {
                     @include size(15px);
+                    border: 2px solid transparent;
                     position: relative;
                     margin: auto;
-                    cursor: pointer;
+                    transition: all 0.3s;
+
+                    &:not(.gpcr-active) {
+                        cursor: pointer;
+                    }
 
                     &::before {
                         @include pseudo();
@@ -95,6 +100,15 @@
 
                     &:hover::before {
                         opacity: 1;
+                    }
+
+                    &.gpcr-active{
+                        border-color: white;
+                        border-radius: 100%;
+
+                        &::before {
+                            opacity: 1;
+                        }
                     }
                 }
             }

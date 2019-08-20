@@ -380,9 +380,12 @@
         .gpickr .gpcr-interaction .gpcr-result .gpcr-pos > div {
           height: 15px;
           width: 15px;
+          border: 2px solid transparent;
           position: relative;
           margin: auto;
-          cursor: pointer; }
+          transition: all 0.3s; }
+          .gpickr .gpcr-interaction .gpcr-result .gpcr-pos > div:not(.gpcr-active) {
+            cursor: pointer; }
           .gpickr .gpcr-interaction .gpcr-result .gpcr-pos > div::before {
             position: absolute;
             content: "";
@@ -399,6 +402,11 @@
             margin: auto; }
           .gpickr .gpcr-interaction .gpcr-result .gpcr-pos > div:hover::before {
             opacity: 1; }
+          .gpickr .gpcr-interaction .gpcr-result .gpcr-pos > div.gpcr-active {
+            border-color: white;
+            border-radius: 100%; }
+            .gpickr .gpcr-interaction .gpcr-result .gpcr-pos > div.gpcr-active::before {
+              opacity: 1; }
       .gpickr .gpcr-interaction .gpcr-result:hover .gpcr-angle {
         opacity: 1; }
     .gpickr .gpcr-interaction .gpcr-mode {
