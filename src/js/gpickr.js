@@ -319,22 +319,22 @@ class GPickr {
         if (this._modes.includes(type)) {
             this._mode = type;
 
+            // Apply new stops
             for (const stop of stops) {
                 this.addStop(stop.color, stop.loc / 100);
             }
 
+            // Remove current stops
             for (const stop of oldStops) {
                 this.removeStop(stop);
             }
 
-            if (modifier) {
-
-                // TODO: What about default values?
-                if (type === 'linear') {
-                    this.setLinearAngle(modifier);
-                } else if (type === 'radial') {
-                    this.setRadialPosition(modifier);
-                }
+            if (type === 'linear') {
+                this._angle = 180; // Default value
+                modifier && this.setLinearAngle(modifier);
+            } else if (type === 'radial') {
+                this._direction = 'circle at center'; // Default value
+                modifier && this.setRadialPosition(modifier);
             }
 
             return true;
