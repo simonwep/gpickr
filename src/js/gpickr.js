@@ -13,8 +13,23 @@ class GPickr {
 
     // Gradient props
     _stops = [];
+
+    // Liniear angle
     _angle = 0;
+
+    // Radial direction
     _direction = 'circle at center';
+    _directions = [
+        {pos: 'tl', css: 'circle at top left'},
+        {pos: 'tm', css: 'circle at top center'},
+        {pos: 'tr', css: 'circle at top right'},
+        {pos: 'r', css: 'circle at right'},
+        {pos: 'm', css: 'circle at center'},
+        {pos: 'l', css: 'circle at left'},
+        {pos: 'br', css: 'circle at bottom right'},
+        {pos: 'bm', css: 'circle at bottom center'},
+        {pos: 'bl', css: 'circle at bottom left'}
+    ];
 
     _focusedStop = null;
     _mode = 'linear';
@@ -139,31 +154,9 @@ class GPickr {
 
         // Adusting circle position
         on(gradient.pos, ['mousedown', 'touchstart'], e => {
-            this._direction = (() => {
-                switch (e.target.getAttribute('data-pos')) {
-                    case 'tl':
-                        return 'circle at top left';
-                    case 'tm':
-                        return 'circle at top center';
-                    case 'tr':
-                        return 'circle at top right';
-                    case 'r':
-                        return 'circle at right';
-                    case 'm':
-                        return 'circle at center';
-                    case 'l':
-                        return 'circle at left';
-                    case 'br':
-                        return 'circle at bottom right';
-                    case 'bm':
-                        return 'circle at bottom center';
-                    case 'bl':
-                        return 'circle at bottom left';
-                    default:
-                        return this._direction;
-                }
-            })();
-
+            const pos = e.target.getAttribute('data-pos');
+            const pair = this._directions.find(v => v.pos === pos);
+            this._direction = (pair && pair.css) || this._direction;
             this._render();
         });
     }
@@ -389,10 +382,36 @@ class GPickr {
     }
 
     /**
+     * Sets a new angle
+     * @param angle
+     */
+    setLinearAngle(angle) {
+        this._angle = angle;
+        this._render();
+        return this;
+    }
+
+    /**
+     * Sets a new radial position
+     * @param position
+     */
+    setRadialPosition(position) {
+        const pair = this._directions.find(v => v.css === position);
+
+        if (!pair) {
+            return false;
+        }
+
+        this._direction = pair.css;
+        this._render();
+        return true;
+    }
+
+    /**
      * Returns the current direction.
      * @returns {*}
      */
-    getRadialDirection() {
+    getRadialPosition() {
         return this._mode === 'radial' ? this._direction : null;
     }
 

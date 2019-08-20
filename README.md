@@ -23,7 +23,9 @@ const gpickr = new GPickr({
 * gpickr.getStops() _- Array of stop objects with each a `location` between `0` and `1` as well as an `rgba` color value. The `toString` function is overridden and 
 returns the array ready-to-use as comma seperated list, useful if a custom direcation / angle want to be used._
 * gpickr.getLinearAngle() _- Returns the current selected angle. `-1` if currently in radial-mode_
-* gpickr.getRadialDirection() _- Returns the current chosen direction. `null` if currently in linear-mode_
+* gpickr.setLinearAngle(angle`:Number`) _- Applies a new angle to the current linear gradient._
+* gpickr.getRadialPosition() _- Returns the current chosen direction. `null` if currently in linear-mode_
+* gpickr.setRadialPosition(position`:String`) _- Sets a new position for the current radial-gradient._
 * gpickr.on(event`:String`, cb`:Function`) _- Appends an event listener to the given corresponding event-name (see section Events), returns the gpickr instance so it can be chained._
 * gpickr.off(event`:String`, cb`:Function`) _- Removes an event listener from the given corresponding event-name (see section Events), returns the gpickr instance so it can be chained._
 
