@@ -17,6 +17,12 @@ class GPickr {
 
     // Liniear angle
     _angle = 0;
+    _angles = [
+        {angle: 0, name: 'to top'},
+        {angle: 90, name: 'to right'},
+        {angle: 180, name: 'to bottom'},
+        {angle: 270, name: 'to left'}
+    ];
 
     // Radial direction
     _direction = 'circle at center';
@@ -322,6 +328,8 @@ class GPickr {
             }
 
             if (modifier) {
+
+                // TODO: What about default values?
                 if (type === 'linear') {
                     this.setLinearAngle(modifier);
                 } else if (type === 'radial') {
@@ -387,13 +395,14 @@ class GPickr {
     }
 
     /**
-     * Sets a new angle, can be a number (degrees) or any valid css string like 0.23turn
+     * Sets a new angle, can be a number (degrees) or any valid css string like 0.23turn or "to bottom"
      * @param angle
      */
     setLinearAngle(angle) {
-        angle = typeof angle === 'number' ? angle : normalize.angleToDegrees(angle);
+        angle = typeof angle === 'number' ? angle :
+            (normalize.angleToDegrees(angle) || (this._angles.find(v => v.name === angle) || {}).angle);
 
-        if (angle) {
+        if (typeof angle === 'number') {
             this._angle = angle;
             this._render();
             return true;
