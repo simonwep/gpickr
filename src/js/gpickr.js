@@ -5,6 +5,7 @@ import Pickr from '@simonwep/pickr';
 import buildGPickr   from './template';
 import simplifyEvent from './utils/simplifyEvent';
 import parseGradient from './utils/parseGradient';
+import normalize     from './utils/normalize';
 
 const {utils} = Pickr;
 const {on, off} = utils;
@@ -20,15 +21,15 @@ class GPickr {
     // Radial direction
     _direction = 'circle at center';
     _directions = [
-        {pos: 'tl', css: 'circle at top left'},
-        {pos: 'tm', css: 'circle at top center'},
-        {pos: 'tr', css: 'circle at top right'},
+        {pos: 'tl', css: 'circle at left top'},
+        {pos: 'tm', css: 'circle at center top'},
+        {pos: 'tr', css: 'circle at right top'},
         {pos: 'r', css: 'circle at right'},
         {pos: 'm', css: 'circle at center'},
         {pos: 'l', css: 'circle at left'},
-        {pos: 'br', css: 'circle at bottom right'},
-        {pos: 'bm', css: 'circle at bottom center'},
-        {pos: 'bl', css: 'circle at bottom left'}
+        {pos: 'br', css: 'circle at right bottom'},
+        {pos: 'bm', css: 'circle at center bottom'},
+        {pos: 'bl', css: 'circle at left bottom'}
     ];
 
     _focusedStop = null;
@@ -309,7 +310,7 @@ class GPickr {
             return false;
         }
 
-        const {type, stops} = parsed;
+        const {type, stops, modifier} = parsed;
         const oldStops = [...this._stops];
         if (this._modes.includes(type)) {
             this._mode = type;
@@ -322,7 +323,14 @@ class GPickr {
                 this.removeStop(stop);
             }
 
-            // TODO: Parse modifier?!
+            console.log(modifier);
+            if (modifier) {
+                if (type === 'linear') {
+                    this.setLinearAngle(modifier);
+                } else if (type === 'radial') {
+                    this.setRadialPosition(modifier);
+                }
+            }
 
             return true;
         }
@@ -382,13 +390,19 @@ class GPickr {
     }
 
     /**
-     * Sets a new angle
+     * Sets a new angle, can be a number (degrees) or any valid css string like 0.23turn
      * @param angle
      */
     setLinearAngle(angle) {
-        this._angle = angle;
-        this._render();
-        return this;
+        angle = typeof angle === 'number' ? angle : normalize.angleToDegrees(angle);
+
+        if (angle) {
+            this._angle = angle;
+            this._render();
+            return true;
+        }
+
+        return false;
     }
 
     /**
