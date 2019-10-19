@@ -75,6 +75,7 @@ class GPickr {
             theme: 'nano',
             inline: true,
             useAsButton: true,
+            showAlways: true,
             defaultRepresentation: 'HEXA',
 
             components: {
