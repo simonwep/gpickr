@@ -4,15 +4,26 @@
         "browser": true
     },
     "extends": [
-        "eslint:recommended"
+        "eslint:recommended",
+        "plugin:react/recommended"
     ],
     "parserOptions": {
         "ecmaVersion": 2018,
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true,
+            "jsx": true
+        },
         "sourceType": "module"
     },
     "rules": {
         "no-cond-assign": "off",
         "eqeqeq": "error",
-        "no-console": "error"
+        "no-console": "warn",
+        "react/prop-types": 1
+    },
+    "settings": {
+        "react": {
+          "version": "detect"
+        }
     }
 }
