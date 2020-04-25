@@ -1,6 +1,7 @@
-import {utils} from '@simonwep/pickr';
+import { utils } from '@simonwep/pickr';
 
-export default () => utils.createFromTemplate(`
+export default () =>
+    utils.createFromTemplate(`
 <div class="gpickr" :ref="root">
 
     <div :ref="pickr"></div>
@@ -14,7 +15,9 @@ export default () => utils.createFromTemplate(`
             </div>
 
             <div :ref="pos" class="gpcr-pos">
-                ${['tl', 'tm', 'tr', 'l', 'm', 'r', 'bl', 'bm', 'br'].map(v => `<div data-pos="${v}"></div>`).join('')}
+                ${['tl', 'tm', 'tr', 'l', 'm', 'r', 'bl', 'bm', 'br']
+                    .map((v) => `<div data-pos="${v}"></div>`)
+                    .join('')}
             </div>
         </div>
 
@@ -26,4 +29,4 @@ export default () => utils.createFromTemplate(`
     </div>
 
 </div>
-`)
+`);

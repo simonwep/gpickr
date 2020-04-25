@@ -1,8 +1,8 @@
 let ts = document.createElement('p');
 
 function* matchAll(content, regexp, group = -1) {
-    for (let match; (match = regexp.exec(content));) {
-        yield ~group ? match[group].trim() : match.map(v => v.trim());
+    for (let match; (match = regexp.exec(content)); ) {
+        yield ~group ? match[group].trim() : match.map((v) => v.trim());
     }
 }
 
@@ -30,7 +30,6 @@ function parseColor(str) {
 }
 
 function parseGradient(str) {
-
     // Validate gradient
     str = normalizeGradient(str);
     if (!str) {
@@ -43,7 +42,7 @@ function parseGradient(str) {
         return null;
     }
 
-    const rawstops = [...matchAll(content, /(rgba?\(.*?\)|#?\w+)(.*?)(?=,|$)/ig)];
+    const rawstops = [...matchAll(content, /(rgba?\(.*?\)|#?\w+)(.*?)(?=,|$)/gi)];
     const stops = [];
     let modifier = null;
 
@@ -52,18 +51,19 @@ function parseGradient(str) {
     for (let i = 0; i < rawstops.length; i++) {
         const [full, rc, rl] = rawstops[i];
         const color = parseColor(rc);
-        const locs = rl.split(/\s+/g)
-            .map(v => match(v, /^-?(\d*(\.\d+)?)%$/, 1))
+        const locs = rl
+            .split(/\s+/g)
+            .map((v) => match(v, /^-?(\d*(\.\d+)?)%$/, 1))
             .filter(Boolean)
             .map(Number);
 
         if (!locs.length && color) {
-            stops.push({loc: null, color});
+            stops.push({ loc: null, color });
         } else if (locs.length) {
             for (const loc of locs) {
                 stops.push({
                     loc,
-                    color: color || lastColor
+                    color: color || lastColor,
                 });
             }
         } else if (!modifier) {
@@ -88,7 +88,7 @@ function parseGradient(str) {
                 let divider = 2;
                 let j = i + 1;
 
-                for (; (j < stops.length) && !stops[j].loc; j++) {
+                for (; j < stops.length && !stops[j].loc; j++) {
                     divider++;
                 }
 
@@ -101,15 +101,14 @@ function parseGradient(str) {
         str,
         type,
         modifier,
-        stops
+        stops,
     };
 }
 
-export default str => {
-
+export default (str) => {
     document.body.appendChild(ts);
     const result = parseGradient(str);
     document.body.removeChild(ts);
 
     return result;
-}
+};

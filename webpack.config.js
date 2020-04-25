@@ -1,8 +1,13 @@
+const webpack = require('webpack');
 const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-    entry:  './src/js/gpickr.js',
+    resolve: {
+        extensions: ['.js', '.jsx'],
+    },
+    // entry:  './src/js/gpickr.js',
+    entry:  './src/reactInit.js',
 
     output: {
         publicPath: 'dist',
@@ -21,7 +26,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.js$/,
+                test: /\.jsx?$/,
                 use: 'babel-loader'
             },
             {
@@ -39,6 +44,9 @@ module.exports = {
         new FixStyleOnlyEntriesPlugin(),
         new MiniCssExtractPlugin({
             filename: 'gpickr.min.css'
-        })
-    ]
+        }),
+        new webpack.SourceMapDevToolPlugin({})
+    ],
+
+    // devtool: 'eval-cheap-module-source-map',
 };

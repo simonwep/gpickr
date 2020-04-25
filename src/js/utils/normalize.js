@@ -1,12 +1,12 @@
 export default {
-
     /**
      * Converts any valid css angle value to degrees
      * @param angle
      * @returns {null|number}
      */
     angleToDegrees(angle) {
-        const match = angle.trim()
+        const match = angle
+            .trim()
             .toLowerCase()
             .match(/^(-?\d*(\.\d+)?)(deg|rad|grad|turn)$/i);
 
@@ -27,5 +27,5 @@ export default {
         }
 
         return null;
-    }
+    },
 };
